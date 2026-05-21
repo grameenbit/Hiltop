@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Store } from 'lucide-react';
+import appIcon from '../assets/images/alif_garments_icon.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -89,7 +90,7 @@ export default function Login() {
         <div className="text-center space-y-2">
           <div className="w-20 h-20 mx-auto mb-4 overflow-hidden rounded-2xl shadow-lg ring-4 ring-[#1aaa55]/10">
             <img 
-              src="/src/assets/images/alif_garments_icon.png" 
+              src={appIcon} 
               alt="Alif Garments App Icon" 
               className="w-full h-full object-cover" 
               referrerPolicy="no-referrer" 

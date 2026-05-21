@@ -1,6 +1,7 @@
 import { User, ChevronRight, Truck, Users, Settings, HelpCircle, LogOut, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../App';
+import appIcon from '../assets/images/alif_garments_icon.png';
 
 export default function MoreOptions() {
   const { signOut, isAdmin } = useAuth();
@@ -111,7 +112,7 @@ export default function MoreOptions() {
       <div className="bg-gradient-to-br from-[#1aaa55]/5 to-[#128a45]/5 rounded-[24px] p-5 shadow-inner border border-gray-100 flex flex-col items-center text-center space-y-3">
         <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-md border-2 border-white">
           <img 
-            src="/src/assets/images/alif_garments_icon.png" 
+            src={appIcon} 
             alt="App Icon" 
             className="w-full h-full object-cover" 
             referrerPolicy="no-referrer" 
