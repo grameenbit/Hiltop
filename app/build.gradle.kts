@@ -54,13 +54,20 @@ dependencies {
 val buildWebAssets = tasks.register<Exec>("buildWebAssets") {
     group = "build"
     description = "Builds the web application assets using npm"
-    
+
+    // Only build if dist doesn't already exist (e.g., built by CI step)
+    onlyIf { !file("${rootDir}/dist").exists() }
+
     val isWindows = org.gradle.internal.os.OperatingSystem.current().isWindows
     if (isWindows) {
         commandLine("cmd", "/c", "npm run build")
     } else {
         commandLine("npm", "run", "build")
     }
+
+    // Pass Supabase env vars from Gradle process environment
+    environment("VITE_SUPABASE_URL", System.getenv("VITE_SUPABASE_URL") ?: "")
+    environment("VITE_SUPABASE_ANON_KEY", System.getenv("VITE_SUPABASE_ANON_KEY") ?: "")
 }
 
 // Copy task that copies dist into assets prior to asset merging
