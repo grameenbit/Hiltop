@@ -33,19 +33,68 @@ export const useAuth = () => useContext(AuthContext);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    const verifyUserStatus = async (currentUser: any) => {
+      if (!currentUser) {
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+
+      const isSuperAdmin = currentUser.email?.trim().toLowerCase() === 'jackmytake@gmail.com';
+      setIsAdmin(isSuperAdmin);
+
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('status, role')
+          .eq('id', currentUser.id)
+          .single();
+
+        if (data && !isSuperAdmin) {
+          if (data.status === 'blocked' || data.status === 'pending') {
+            await supabase.auth.signOut();
+            setUser(null);
+            setIsAdmin(false);
+            alert('আপনার অ্যাকাউন্টটি পেন্ডিং বা ব্লকড অবস্থায় আছে!');
+          } else {
+            setIsAdmin(data.role === 'admin');
+          }
+        } else if (isSuperAdmin) {
+          setIsAdmin(true);
+        }
+      } catch (err) {
+        console.error('Error verifyUserStatus AuthProvider:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      const sessionUser = session?.user ?? null;
+      setUser(sessionUser);
       if (session?.access_token) saveSessionToken(session.access_token);
-      setLoading(false);
+      
+      if (sessionUser) {
+        verifyUserStatus(sessionUser);
+      } else {
+        setLoading(false);
+      }
       processSyncQueue();
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const sessionUser = session?.user ?? null;
+      setUser(sessionUser);
       if (session?.access_token) saveSessionToken(session.access_token);
-      setLoading(false);
+      
+      if (sessionUser) {
+        verifyUserStatus(sessionUser);
+      } else {
+        setLoading(false);
+      }
       processSyncQueue();
     });
 
@@ -60,7 +109,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const isAdmin = user?.email === 'jackmytake@gmail.com';
   const signOut = async () => {
     await supabase.auth.signOut();
   };
