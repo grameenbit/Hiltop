@@ -53,6 +53,7 @@ export interface Employee {
   pin: string;
   role: string;
   position: string;
+  status?: string; // 'pending' | 'approved' | 'blocked'
   commission_rate: number;
   salary: number;
   advance: number;
