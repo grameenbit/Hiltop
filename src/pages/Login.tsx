@@ -144,7 +144,7 @@ export default function Login() {
         <div className="text-center space-y-2">
           <div className="w-20 h-20 mx-auto mb-4 overflow-hidden rounded-2xl shadow-lg ring-4 ring-[#1aaa55]/10">
             <img 
-              src="/src/assets/images/alif_garments_icon.png" 
+              src="src/assets/images/clothshop_icon_1779298132884.png"
               alt="Alif Garments App Icon" 
               className="w-full h-full object-cover" 
               referrerPolicy="no-referrer" 
